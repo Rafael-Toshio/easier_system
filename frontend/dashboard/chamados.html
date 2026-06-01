@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Meus Chamados - EASIER</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/chamados.css">
+</head>
+<body>
+	<div id="sidebar-component"></div>
+	<div class="main">
+		<div id="header-component"></div>
+		<div class="content">
+			<div class="page-title">Meus Chamados</div>
+			<div class="page-subtitle">Acompanhe e gerencie todos os seus chamados.</div>
+			<div class="chamados-toolbar">
+				<div class="search-box">
+					<span class="search-icon">🔍</span>
+					<input type="text" id="search-input" placeholder="Buscar chamados..." oninput="filterTickets()">
+				</div>
+				<select class="filter-select" id="filter-status" onchange="filterTickets()">
+					<option value="">Todos os status</option>
+					<option value="Em andamento">Em andamento</option>
+					<option value="Concluído">Concluído</option>
+					<option value="Aberto">Aberto</option>
+					<option value="Cancelado">Cancelado</option>
+				</select>
+				<button class="btn-novo" onclick="openNewModal()">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+					Novo Chamado
+				</button>
+			</div>
+			<div class="all-tickets-list">
+				<div class="tickets-table-header">
+					<span class="th">Chamado</span>
+					<span class="th">Categoria</span>
+					<span class="th">Data de abertura</span>
+					<span class="th">Status</span>
+				</div>
+				<div id="tickets-table-body">
+					<!-- rendered by JS -->
+				</div>
+				<div class="no-results" id="no-results" style="display:none;">Nenhum chamado encontrado.</div>
+			</div>
+		</div>
+		<div id="footer-component"></div>
+	</div>
+
+	<!-- MODAL ETAPA 1: Seleção de Categoria -->
+	<div class="modal-overlay" id="modal-categoria">
+		<div class="modal">
+			<div class="modal-header">
+				<div class="modal-title">Escolha a Categoria</div>
+				<button class="modal-close" onclick="closeModal('modal-categoria')">✕</button>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Categoria do chamado *</label>
+				<div id="categoria-list" style="display: flex; flex-direction: column; gap: 12px;">
+					<button class="btn-submit" onclick="selectCategoria('Manutenção')">Manutenção</button>
+					<button class="btn-submit" onclick="selectCategoria('Revisão Periódica')">Revisão Periódica</button>
+					<button class="btn-submit" onclick="selectCategoria('Dúvida Técnica')">Dúvida Técnica</button>
+					<button class="btn-submit" onclick="selectCategoria('Garantia')">Garantia</button>
+					<button class="btn-submit" onclick="selectCategoria('Financeiro')">Financeiro</button>
+					<button class="btn-submit" onclick="selectCategoria('Outros')">Outros</button>
+				</div>
+			</div>
+			<div class="modal-actions">
+				<button class="btn-cancel" onclick="closeModal('modal-categoria')">Cancelar</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL ETAPA 2: Detalhes do Chamado -->
+	<div class="modal-overlay" id="modal-novo">
+		<div class="modal">
+			<div class="modal-header">
+				<div class="modal-title">Detalhes do Chamado</div>
+				<button class="modal-close" onclick="closeModal('modal-novo')">✕</button>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Categoria</label>
+				<input class="form-input" id="new-categoria" readonly>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Título do chamado *</label>
+				<input class="form-input" id="new-titulo" placeholder="Ex: Problema no ar-condicionado">
+			</div>
+			<div class="form-group">
+				<label class="form-label">Marca do veículo *</label>
+				<input class="form-input" id="new-marca" placeholder="Ex: Toyota">
+			</div>
+			<div class="form-group">
+				<label class="form-label">Modelo do veículo *</label>
+				<input class="form-input" id="new-modelo" placeholder="Ex: Corolla 2020">
+			</div>
+			<div class="form-group">
+				<label class="form-label">Placa *</label>
+				<input class="form-input" id="new-placa" placeholder="Ex: ABC1D23">
+			</div>
+			<div class="form-group">
+				<label class="form-label">Descrição</label>
+				<textarea class="form-textarea" id="new-desc" placeholder="Descreva detalhes do problema ou dúvida..."></textarea>
+			</div>
+			<div class="modal-actions">
+				<button class="btn-cancel" onclick="closeModal('modal-novo')">Cancelar</button>
+				<button class="btn-submit" onclick="submitNewTicket()">Abrir Chamado</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL DETALHE CHAMADO -->
+	<div class="modal-overlay" id="modal-detalhe">
+		<div class="modal">
+			<div class="modal-header">
+				<div class="modal-title">Detalhes do Chamado</div>
+				<button class="modal-close" onclick="closeModal('modal-detalhe')">✕</button>
+			</div>
+			<div id="detalhe-content"></div>
+			<div class="modal-actions">
+				<button class="btn-cancel" onclick="closeModal('modal-detalhe')">Fechar</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- TOAST -->
+	<div class="toast" id="toast"></div>
+
+	<script src="js/components.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/chamados.js"></script>
+</body>
+</html>

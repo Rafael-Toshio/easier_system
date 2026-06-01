@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Configurações - EASIER</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/config.css">
+</head>
+<body>
+	<div id="sidebar-component"></div>
+	<div class="main">
+		<div id="header-component"></div>
+		<div class="content">
+			<div class="page-title">Configurações</div>
+			<div class="page-subtitle">Personalize sua experiência no sistema.</div>
+
+			<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:600px;box-shadow:var(--card-shadow);margin-top:24px;">
+				<div class="form-group">
+					<label class="form-label" for="theme-toggle">Tema do sistema</label>
+					<div style="display:flex;align-items:center;gap:16px;">
+						<button id="theme-toggle" class="btn-submit" onclick="toggleTheme()" style="min-width:120px"></button>
+						<span id="theme-label" style="color:#888;font-size:14px;"></span>
+					</div>
+				</div>
+				<hr style="margin:24px 0; border:none; border-top:1px solid var(--border);">
+				<div class="form-group">
+					<label class="form-label">Notificações</label>
+					<input type="checkbox" id="notificacoes" checked style="margin-right:8px;"> Ativar notificações por e-mail
+				</div>
+			</div>
+		</div>
+		<div id="footer-component"></div>
+	</div>
+	<div class="toast" id="toast"></div>
+	<script src="js/components.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/config.js"></script>
+</body>
+</html>

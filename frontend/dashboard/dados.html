@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Meus Dados - EASIER</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/dados.css">
+</head>
+<body>
+	<div id="sidebar-component"></div>
+	<div class="main">
+		<div id="header-component"></div>
+		<div class="content">
+			<div class="page-title">Meus Dados</div>
+			<div class="page-subtitle">Informações da sua conta.</div>
+			<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:480px;box-shadow:var(--card-shadow);">
+				<div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" value="Rafael Toshio"></div>
+				<div class="form-group"><label class="form-label">E-mail</label><input class="form-input" value="rafael.toshio@email.com"></div>
+				<div class="form-group"><label class="form-label">Telefone</label><input class="form-input" value="(11) 99999-0000"></div>
+				<div class="form-group"><label class="form-label">CPF</label><input class="form-input" value="123.456.789-00" readonly></div>
+				<button class="btn-submit" onclick="showToast('Dados salvos com sucesso!')">Salvar alterações</button>
+			</div>
+		</div>
+		<div id="footer-component"></div>
+	</div>
+	<div class="toast" id="toast"></div>
+	<script src="js/components.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/dados.js"></script>
+</body>
+</html>

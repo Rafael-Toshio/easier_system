@@ -1,0 +1,23 @@
+/* Estilos globais e variáveis */
+:root {
+  --gold: #C89B3C;
+  --gold-dark: #A67C28;
+  --black: #0A0A0A;
+  --white: #F5F5F0;
+  --gray: #888;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

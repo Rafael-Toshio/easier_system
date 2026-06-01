@@ -1,0 +1,2042 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EASIER — BlasCar Multimarcas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root {
+    --gold:      #D4920A;
+    --gold-dark: #B07A08;
+    --gold-light:#F5EDD5;
+    --black:     #1A1A1A;
+    --bg:        #F7F3EC;
+    --card:      #FFFFFF;
+    --mid:       #555555;
+    --light:     #888888;
+    --green:     #4CAF50;
+    --green-bg:  #E8F5E9;
+    --orange:    #E07B00;
+    --orange-bg: #FFF3E0;
+    --blue:      #1565C0;
+    --blue-bg:   #E3F2FD;
+    --red:       #D32F2F;
+    --red-bg:    #FFEBEE;
+    --sidebar-w: 224px;
+    --topbar-h:  58px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
+
+  /* ── UTILS ── */
+  .hidden   { display: none !important; }
+  .flex     { display: flex; }
+  .col      { flex-direction: column; }
+  .gap-8    { gap: 8px; }
+  .gap-12   { gap: 12px; }
+  .gap-16   { gap: 16px; }
+  .gap-20   { gap: 20px; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+  /* ══════════════════════════════════════════════
+     AUTH PAGES (LOGIN + CADASTRO)
+  ══════════════════════════════════════════════ */
+  #auth-wrapper {
+    display: flex; width: 100vw; min-height: 100vh; background: #0A0A0A;
+  }
+  /* Splash lateral */
+  .auth-splash {
+    flex: 0 0 340px; background: var(--gold);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .auth-splash::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(0,0,0,0.04) 40px,rgba(0,0,0,0.04) 41px);
+  }
+  .auth-splash-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 1; }
+  .auth-arrows { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: #0A0A0A; letter-spacing: -4px; line-height: 1; }
+  .auth-brand  { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: #0A0A0A; letter-spacing: 8px; }
+  .auth-tagline { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.45); letter-spacing: 3px; text-transform: uppercase; margin-top: -10px; }
+  .auth-features { margin-top: 48px; display: flex; flex-direction: column; gap: 10px; width: 220px; }
+  .auth-feat { display: flex; align-items: center; gap: 10px; }
+  .auth-feat-icon { width: 30px; height: 30px; border-radius: 7px; background: rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .auth-feat-icon .material-icons-round { color: rgba(0,0,0,0.55); font-size: 15px; }
+  .auth-feat-label { font-size: 12px; color: rgba(0,0,0,0.5); font-weight: 500; }
+
+  /* Right form side */
+  .auth-form-side {
+    flex: 1; background: #F5F5F0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 80px; overflow-y: auto;
+    animation: authSlideIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes authSlideIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: none; } }
+
+  .auth-form-inner { width: 100%; max-width: 400px; }
+
+  .auth-screen-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; color: #0A0A0A; letter-spacing: 4px; line-height: 1; margin-bottom: 6px;
+  }
+  .auth-screen-title span { color: var(--gold); }
+  .auth-screen-sub { font-size: 13px; color: #888; margin-bottom: 32px; }
+
+  /* Tab switcher (Cliente / Funcionário) */
+  .auth-tabs { display: flex; background: #E8E8E3; border-radius: 6px; padding: 4px; gap: 4px; margin-bottom: 28px; }
+  .auth-tab {
+    flex: 1; padding: 10px; border: none; background: transparent; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: #888;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .auth-tab.active { background: var(--gold); color: white; }
+
+  /* Auth fields */
+  .auth-field { margin-bottom: 16px; }
+  .auth-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #0A0A0A; margin-bottom: 6px; }
+  .auth-input {
+    width: 100%; padding: 13px 14px; background: var(--gold);
+    border: none; border-radius: 5px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; color: #0A0A0A; outline: none;
+    transition: box-shadow 0.2s;
+  }
+  .auth-input::placeholder { color: rgba(0,0,0,0.4); }
+  .auth-input:focus { box-shadow: 0 0 0 3px rgba(212,146,10,0.35); }
+  .auth-pw-wrap { position: relative; }
+  .auth-pw-wrap .auth-input { padding-right: 44px; }
+  .auth-pw-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: rgba(0,0,0,0.4); font-size: 16px; }
+  .auth-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .auth-btn {
+    width: 100%; margin-top: 8px; padding: 16px; background: #0A0A0A; color: #F5F5F0;
+    border: none; border-radius: 5px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px;
+    cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  .auth-btn:hover { background: #222; }
+  .auth-btn:active { transform: scale(0.98); }
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .auth-msg { font-size: 13px; text-align: center; padding: 10px 16px; border-radius: 5px; display: none; margin-bottom: 12px; }
+  .auth-msg.erro { background: #fdecea; color: #c0392b; display: block; }
+  .auth-msg.ok   { background: #e8f8f0; color: #1e8449; display: block; }
+
+  .auth-switch { margin-top: 24px; font-size: 13px; color: #888; text-align: center; }
+  .auth-switch a { color: #A67C28; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .auth-switch a:hover { text-decoration: underline; }
+
+  /* Subscreen visibility */
+  #screen-login { display: block; }
+  #screen-cadastro { display: none; }
+
+  /* Keep btn-primary for app shell */
+  .btn-primary {
+    width: 100%; padding: 15px; background: var(--gold); color: white;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { background: var(--gold-dark); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .login-footer { margin-top: 32px; border-top: 1px solid #d0d0d0; padding-top: 14px; text-align: center; color: #aaa; font-size: 11px; }
+
+  /* ══════════════════════════════════════════════
+     APP SHELL
+  ══════════════════════════════════════════════ */
+#app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w); background: var(--gold);
+    display: flex; flex-direction: column; height: 100vh;
+    flex-shrink: 0; overflow-y: auto;
+  }
+  .sidebar-logo { padding: 32px 22px 28px; }
+  .sidebar-arrows { display: flex; gap: 2px; }
+  .sidebar-arrows span { color: white; font-size: 20px; font-weight: 800; }
+  .sidebar-brand { color: white; font-size: 27px; font-weight: 900; letter-spacing: 3.5px; font-family: 'DM Serif Display', serif; }
+  .nav-item {
+    margin: 2px 10px; padding: 11px 14px; border-radius: 10px;
+    display: flex; align-items: center; gap: 11px;
+    cursor: pointer; transition: background 0.15s;
+    user-select: none;
+  }
+  .nav-item:hover { background: rgba(0,0,0,0.1); }
+  .nav-item.active { background: var(--black); }
+  .nav-item .material-icons-round { color: white; font-size: 19px; flex-shrink: 0; }
+  .nav-label { color: white; font-size: 13px; font-weight: 500; flex: 1; }
+  .nav-item.active .nav-label { font-weight: 700; }
+  .nav-badge {
+    background: red; color: white; font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 10px;
+  }
+  .sidebar-spacer { flex: 1; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: var(--topbar-h); background: white; border-bottom: 1px solid #eee;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 30px; gap: 16px; flex-shrink: 0;
+  }
+  .topbar-role { color: var(--mid); font-size: 13.5px; }
+  .topbar-sep { width: 1px; height: 18px; background: #e0e0e0; }
+  .topbar-user { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--gold);
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .avatar .material-icons-round { color: white; font-size: 18px; }
+  .avatar-dot {
+    position: absolute; right: 0; top: 0;
+    width: 10px; height: 10px; background: red; border-radius: 50%;
+    border: 2px solid white;
+  }
+  .topbar-name { font-weight: 700; font-size: 13.5px; }
+  .topbar-arrow { color: var(--mid); font-size: 20px; }
+
+  /* Admin popup */
+  .admin-popup {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: white; border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    width: 300px; padding: 20px; z-index: 100;
+    display: none;
+  }
+  .admin-popup.open { display: block; }
+  .admin-avatar-big {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--gold-light);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+  }
+  .admin-avatar-big .material-icons-round { color: var(--gold); font-size: 36px; }
+  .admin-popup-name { text-align: center; font-size: 16px; font-weight: 800; }
+  .admin-popup-role {
+    display: inline-block; background: var(--gold-light); color: var(--gold-dark);
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    margin: 4px auto 16px; display: block; width: fit-content; margin-left: auto; margin-right: auto;
+  }
+  .admin-info-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; }
+  .admin-info-row .material-icons-round { color: var(--gold); font-size: 15px; margin-top: 1px; }
+  .admin-info-label { font-size: 10px; color: var(--light); font-weight: 600; }
+  .admin-info-val { font-size: 12.5px; font-weight: 500; }
+  .btn-logout {
+    width: 100%; padding: 10px; border: 1.5px solid red; border-radius: 8px;
+    background: transparent; color: red; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background 0.15s;
+  }
+  .btn-logout:hover { background: var(--red-bg); }
+
+  /* ── MAIN CONTENT ── */
+  .main-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .page-area { flex: 1; overflow-y: auto; }
+  .page { display: none; padding: 26px 30px 30px; }
+  .page.active { display: block; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { margin-bottom: 22px; }
+  .page-title { font-size: 24px; font-weight: 900; letter-spacing: 1.5px; font-family: 'DM Serif Display', serif; }
+  .page-title-bar { width: 36px; height: 3px; background: var(--gold); margin: 4px 0 7px; }
+  .page-subtitle { font-size: 13px; color: var(--mid); }
+
+  /* ── CARDS GRID ── */
+  .cards-row { display: flex; gap: 12px; margin-bottom: 24px; }
+  .dash-card {
+    flex: 1; background: white; border-radius: 12px; padding: 18px;
+    border: 1px solid #e8e8e8; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .dash-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .dash-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .dash-icon .material-icons-round { font-size: 22px; }
+  .dash-value { font-size: 26px; font-weight: 800; line-height: 1; }
+  .dash-name  { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .dash-sub   { font-size: 10.5px; color: var(--light); }
+  .dash-arrow { margin-left: auto; font-size: 12px; }
+
+  /* ── TWO-COL ROW ── */
+  .two-col { display: flex; gap: 18px; align-items: flex-start; }
+  .col-55  { flex: 55; }
+  .col-45  { flex: 45; }
+
+  /* ── CARD CONTAINER ── */
+  .card {
+    background: white; border-radius: 12px; padding: 22px;
+    border: 1px solid #e8e8e8;
+  }
+  .card-title { font-size: 12.5px; font-weight: 800; letter-spacing: 0.7px; }
+  .card-hdr   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .link-gold  { color: var(--gold); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  .link-gold:hover { text-decoration: underline; }
+
+  /* ── STATUS BADGE ── */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  }
+  .badge-orange { background: var(--orange-bg); color: var(--orange); }
+  .badge-green  { background: var(--green-bg);  color: var(--green); }
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue); }
+
+  /* ── CHAMADO TILE ── */
+  .tile { padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .tile:last-child { border-bottom: none; }
+  .tile:hover { background: #fafafa; margin: 0 -4px; padding: 10px 4px; }
+  .tile-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .tile-info { flex: 1; }
+  .tile-title  { font-size: 12.5px; font-weight: 600; }
+  .tile-client { font-size: 11px; color: var(--light); }
+  .tile-chevron { color: var(--light); font-size: 16px; }
+
+  /* ── MSG TILE ── */
+  .msg-tile { padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .msg-tile:last-child { border-bottom: none; }
+  .msg-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .msg-avatar .material-icons-round { font-size: 18px; }
+  .msg-sender  { font-size: 12.5px; font-weight: 700; }
+  .msg-preview { font-size: 11px; color: var(--light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+  .unread-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 4px; }
+
+  /* ── BTN OUTLINED ── */
+  .btn-outlined {
+    width: 100%; padding: 13px; border: 1.5px solid var(--gold); border-radius: 8px;
+    background: transparent; color: var(--gold); font-size: 12.5px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 16px;
+    transition: background 0.15s;
+  }
+  .btn-outlined:hover { background: rgba(212,146,10,0.05); }
+
+  /* ══════════════════════════════════════════════
+     FORMULÁRIOS PAGE
+  ══════════════════════════════════════════════ */
+  .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip {
+    padding: 8px 14px; border-radius: 20px; border: 1.5px solid #ddd;
+    background: white; font-size: 12.5px; font-weight: 600; color: var(--mid);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s; user-select: none;
+  }
+  .chip-count { font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+  .chip.active-orange { background: var(--orange); border-color: var(--orange); color: white; }
+  .chip.active-orange .chip-count { background: rgba(255,255,255,0.3); color: white; }
+  .chip.active-green  { background: var(--green);  border-color: var(--green);  color: white; }
+  .chip.active-green  .chip-count { background: rgba(255,255,255,0.3); color: white; }
+  .chip.active-blue   { background: var(--blue);   border-color: var(--blue);   color: white; }
+  .chip.active-blue   .chip-count { background: rgba(255,255,255,0.3); color: white; }
+  .chip.active-gold   { background: var(--gold);   border-color: var(--gold);   color: white; }
+  .chip.active-gold   .chip-count { background: rgba(255,255,255,0.3); color: white; }
+
+  .form-card {
+    background: white; border-radius: 12px; padding: 20px;
+    border: 1px solid #e8e8e8; margin-bottom: 12px;
+    cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .form-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); transform: translateY(-1px); }
+  .form-card-hdr { display: flex; align-items: flex-start; gap: 14px; }
+  .form-card-icon {
+    width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--gold-light);
+  }
+  .form-card-icon .material-icons-round { color: var(--gold); font-size: 22px; }
+  .form-card-title  { font-size: 14px; font-weight: 700; }
+  .form-card-client { font-size: 12px; color: var(--mid); margin: 2px 0; }
+  .form-card-sub    { font-size: 11px; color: var(--light); }
+  .form-card-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+  .btn-sm {
+    padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; border: none;
+    display: flex; align-items: center; gap: 4px; transition: opacity 0.15s;
+  }
+  .btn-sm:hover { opacity: 0.85; }
+  .btn-sm .material-icons-round { font-size: 14px; }
+  .btn-sm-gold  { background: var(--gold); color: white; }
+  .btn-sm-blue  { background: var(--blue-bg); color: var(--blue); }
+  .btn-sm-doc   { background: var(--gold-light); color: var(--gold-dark); }
+
+  /* ── PROGRESS BAR ── */
+  .prog-bar-wrap { background: #e8e8e8; border-radius: 6px; height: 8px; overflow: hidden; margin-top: 8px; }
+  .prog-bar      { height: 100%; border-radius: 6px; transition: width 0.5s; }
+
+  /* ══════════════════════════════════════════════
+     ABRIR CHAMADO PAGE
+  ══════════════════════════════════════════════ */
+  .cat-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .cat-chip {
+    padding: 8px 14px; border-radius: 20px; border: 1.5px solid #ccc;
+    background: white; font-size: 12.5px; font-weight: 600; color: var(--mid);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .cat-chip.active { background: var(--gold); border-color: var(--gold); color: white; }
+  .two-fields { display: flex; gap: 16px; }
+  .two-fields .field-group { flex: 1; }
+  .field-group { margin-bottom: 16px; }
+  .field-group label { font-size: 13px; font-weight: 700; display: block; margin-bottom: 8px; }
+  .input-field {
+    width: 100%; padding: 12px 14px 12px 42px;
+    border: 1.5px solid #ddd; border-radius: 8px; background: white;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,146,10,0.1); }
+  .textarea-field {
+    width: 100%; padding: 14px; border: 1.5px solid #ddd; border-radius: 8px;
+    background: white; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; resize: vertical; min-height: 100px; transition: border-color 0.2s;
+  }
+  .textarea-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,146,10,0.1); }
+  .success-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 30px; text-align: center;
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%; background: var(--green-bg);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+  }
+  .success-icon .material-icons-round { color: var(--green); font-size: 44px; }
+
+  /* ══════════════════════════════════════════════
+     PERFIS PAGE
+  ══════════════════════════════════════════════ */
+  .perfil-card {
+    background: white; border-radius: 12px; padding: 18px;
+    border: 1px solid #e8e8e8; box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .perfil-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); transform: translateY(-1px); }
+  .perfil-avatar { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+  .perfil-avatar-inner {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .perfil-avatar-inner .material-icons-round { font-size: 26px; }
+  .online-dot {
+    position: absolute; right: 0; bottom: 0;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--green); border: 2px solid white;
+  }
+  .perfil-name  { font-size: 14px; font-weight: 700; }
+  .perfil-email { font-size: 11.5px; color: var(--light); margin: 2px 0 4px; }
+  .perfil-tags  { display: flex; align-items: center; gap: 8px; }
+  .tipo-badge {
+    padding: 3px 8px; border-radius: 5px; font-size: 10.5px; font-weight: 700;
+  }
+  .online-label { font-size: 10.5px; display: flex; align-items: center; gap: 4px; }
+  .online-label::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ══════════════════════════════════════════════
+     VEÍCULOS PAGE
+  ══════════════════════════════════════════════ */
+  .veiculo-card {
+    background: white; border-radius: 12px; padding: 20px;
+    border: 1px solid #e8e8e8; margin-bottom: 12px;
+    cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .veiculo-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); transform: translateY(-1px); }
+  .veiculo-hdr  { display: flex; align-items: flex-start; justify-content: space-between; }
+  .veiculo-plate {
+    display: inline-block; background: var(--black); color: white;
+    font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px;
+    letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .veiculo-model  { font-size: 16px; font-weight: 800; }
+  .veiculo-info   { font-size: 12px; color: var(--mid); margin-top: 2px; }
+  .veiculo-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+  .veiculo-detail-item { display: flex; align-items: center; gap: 10px; }
+  .detail-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--gold-light);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .detail-icon .material-icons-round { color: var(--gold); font-size: 17px; }
+  .detail-label { font-size: 10.5px; color: var(--light); }
+  .detail-val   { font-size: 12.5px; font-weight: 700; }
+
+  /* ══════════════════════════════════════════════
+     NOTIFICAÇÕES PAGE
+  ══════════════════════════════════════════════ */
+  .notif-card {
+    background: white; border-radius: 12px; padding: 16px;
+    border: 1px solid #e8e8e8; margin-bottom: 10px;
+    display: flex; gap: 14px; cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .notif-card.unread { background: #FFF8EC; border-color: rgba(212,146,10,0.4); }
+  .notif-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+  .notif-icon {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .notif-icon .material-icons-round { font-size: 20px; }
+  .notif-title { font-size: 13.5px; font-weight: 500; flex: 1; }
+  .notif-title.bold { font-weight: 700; }
+  .notif-msg  { font-size: 12px; color: var(--mid); margin-top: 3px; }
+  .notif-time { font-size: 10.5px; color: var(--light); margin-top: 4px; }
+  .notif-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+  .btn-text { background: none; border: none; color: var(--gold); font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  /* ══════════════════════════════════════════════
+     MENSAGENS PAGE
+  ══════════════════════════════════════════════ */
+  #page-mensagens { padding: 0; height: calc(100vh - var(--topbar-h)); display: none; }
+  #page-mensagens.active { display: flex; }
+  .msg-sidebar {
+    width: 300px; background: white; border-right: 1px solid #e8e8e8;
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+  .msg-sidebar-header {
+    padding: 16px 16px 0; flex-shrink: 0;
+  }
+  .msg-sidebar-title { font-size: 15px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .msg-search-wrap { position: relative; padding: 0 16px 14px; }
+  .msg-search {
+    width: 100%; padding: 9px 12px 9px 36px; background: var(--bg);
+    border: none; border-radius: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .msg-search-icon { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); color: var(--light); font-size: 18px; }
+  .msg-list { flex: 1; overflow-y: auto; border-top: 1px solid #f0f0f0; }
+  .msg-list-item {
+    padding: 14px 16px; display: flex; gap: 10px; cursor: pointer;
+    transition: background 0.1s; border-bottom: 1px solid #f5f5f5;
+  }
+  .msg-list-item:hover { background: #fafafa; }
+  .msg-list-item.selected { background: var(--gold-light); border-left: 3px solid var(--gold); }
+  .msg-list-item.unread { background: #FFF8EC; }
+  .msg-list-avatar {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .msg-list-avatar .material-icons-round { font-size: 20px; }
+  .msg-list-name { font-size: 13px; font-weight: 500; }
+  .msg-list-name.bold { font-weight: 700; }
+  .msg-list-cargo { font-size: 10.5px; color: var(--light); }
+  .msg-list-preview { font-size: 11px; color: var(--mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .msg-list-time { font-size: 10px; color: var(--light); white-space: nowrap; }
+
+  .msg-content { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+  .msg-content-header {
+    padding: 14px 20px; background: white; border-bottom: 1px solid #e8e8e8;
+    display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  }
+  .msg-content-avatar {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--gold-light);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .msg-content-avatar .material-icons-round { color: var(--gold); font-size: 22px; }
+  .msg-content-name  { font-size: 14px; font-weight: 700; }
+  .msg-content-cargo { font-size: 11.5px; color: var(--light); }
+  .msg-online-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); margin-left: 6px; display: inline-block; vertical-align: middle; }
+  .msg-header-actions { margin-left: auto; display: flex; gap: 6px; }
+  .msg-header-btn {
+    width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #e8e8e8;
+    background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .msg-header-btn:hover { background: var(--bg); }
+  .msg-header-btn .material-icons-round { font-size: 18px; color: var(--mid); }
+
+  /* Chat body / bubbles */
+  .msg-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .msg-day-divider {
+    display: flex; align-items: center; gap: 10px; margin: 4px 0;
+  }
+  .msg-day-divider::before, .msg-day-divider::after {
+    content: ''; flex: 1; height: 1px; background: #e0e0e0;
+  }
+  .msg-day-label { font-size: 11px; color: var(--light); font-weight: 600; white-space: nowrap; }
+
+  .bubble-row { display: flex; gap: 8px; align-items: flex-end; max-width: 75%; }
+  .bubble-row.sent { align-self: flex-end; flex-direction: row-reverse; }
+  .bubble-row.received { align-self: flex-start; }
+  .bubble-avatar {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bubble-avatar .material-icons-round { font-size: 15px; }
+  .bubble-wrap { display: flex; flex-direction: column; gap: 2px; }
+  .bubble-row.sent .bubble-wrap { align-items: flex-end; }
+  .bubble-sender { font-size: 10.5px; font-weight: 600; color: var(--mid); margin-bottom: 2px; }
+
+  .bubble {
+    padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.5;
+    word-break: break-word;
+  }
+  .bubble.received {
+    background: white; border: 1px solid #e8e8e8; border-bottom-left-radius: 4px;
+    color: var(--black);
+  }
+  .bubble.sent {
+    background: var(--gold); color: white; border-bottom-right-radius: 4px;
+  }
+  .bubble-time {
+    font-size: 10px; color: var(--light); margin-top: 3px;
+  }
+  .bubble-row.sent .bubble-time { text-align: right; }
+  .bubble-status { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 2px; text-align: right; }
+
+  /* Typing indicator */
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 10px 14px; background: white; border-radius: 14px; border: 1px solid #e8e8e8; border-bottom-left-radius: 4px; width: fit-content; }
+  .typing-dot { width: 7px; height: 7px; background: var(--light); border-radius: 50%; animation: typingBounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  .msg-input-wrap {
+    padding: 14px 16px; background: white; border-top: 1px solid #e8e8e8;
+    display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
+  }
+  .msg-input-box {
+    flex: 1; padding: 11px 14px; background: var(--bg);
+    border: 1.5px solid transparent; border-radius: 10px; font-size: 13px;
+    font-family: 'DM Sans', sans-serif; outline: none;
+    resize: none; min-height: 42px; max-height: 120px; line-height: 1.4;
+    transition: border-color 0.2s;
+  }
+  .msg-input-box:focus { border-color: var(--gold); background: white; }
+  .btn-send {
+    padding: 11px 18px; background: var(--gold); color: white; border: none;
+    border-radius: 10px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0; height: 42px; transition: background 0.15s;
+  }
+  .btn-send:hover { background: var(--gold-dark); }
+  .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .msg-empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #ccc; background: var(--bg);
+  }
+  .msg-empty .material-icons-round { font-size: 56px; margin-bottom: 12px; }
+  .msg-empty p { font-size: 14px; color: #aaa; }
+  .msg-empty-sub { font-size: 12px; color: #bbb; margin-top: 4px; }
+
+  /* ══════════════════════════════════════════════
+     SAIR PAGE
+  ══════════════════════════════════════════════ */
+  .sair-wrap { display: flex; align-items: center; justify-content: center; height: 100%; padding: 30px; }
+  .sair-card {
+    background: white; border-radius: 16px; padding: 36px; border: 1px solid #e8e8e8;
+    max-width: 420px; width: 100%; text-align: center;
+  }
+  .sair-icon {
+    width: 72px; height: 72px; border-radius: 50%; background: var(--red-bg);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+  }
+  .sair-icon .material-icons-round { color: var(--red); font-size: 34px; }
+  .sair-title { font-size: 22px; font-weight: 900; font-family: 'DM Serif Display', serif; }
+  .sair-sub { color: var(--mid); font-size: 13.5px; line-height: 1.5; margin: 10px 0 28px; }
+  .sair-warning {
+    background: var(--red-bg); border-radius: 10px; padding: 14px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    text-align: left;
+  }
+  .sair-warning .material-icons-round { color: var(--red); font-size: 18px; flex-shrink: 0; }
+  .sair-warning p { font-size: 12px; color: var(--red); line-height: 1.4; }
+  .sair-btns { display: flex; gap: 14px; }
+  .btn-cancel {
+    flex: 1; padding: 13px; border: 1.5px solid #ddd; border-radius: 10px;
+    background: transparent; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+  }
+  .btn-danger {
+    flex: 1; padding: 13px; background: var(--red); color: white; border: none;
+    border-radius: 10px; font-size: 13px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ══════════════════════════════════════════════
+     MODAL / OVERLAY
+  ══════════════════════════════════════════════ */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 200; display: none; align-items: center; justify-content: center;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--bg); border-radius: 16px; width: 100%; max-width: 700px;
+    max-height: 90vh; overflow-y: auto; margin: 16px;
+  }
+  .modal-topbar {
+    background: var(--black); color: white; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px; border-radius: 16px 16px 0 0; position: sticky; top: 0; z-index: 1;
+  }
+  .modal-topbar-bar { width: 8px; height: 28px; background: var(--gold); border-radius: 2px; }
+  .modal-topbar-title { font-weight: 800; font-size: 15px; letter-spacing: 0.5px; flex: 1; }
+  .modal-close { background: none; border: none; color: white; cursor: pointer; font-size: 20px; }
+  .modal-body { padding: 24px; }
+
+  .info-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
+  .info-row .material-icons-round { color: var(--gold); font-size: 14px; margin-top: 1px; }
+  .info-label { font-size: 12px; color: var(--light); font-weight: 600; }
+  .info-val   { font-size: 12.5px; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; }
+  .timeline-item { display: flex; gap: 18px; }
+  .timeline-track { display: flex; flex-direction: column; align-items: center; }
+  .t-circle {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid; font-size: 0;
+  }
+  .t-circle.done   { background: var(--gold); border-color: var(--gold-dark); }
+  .t-circle.done .material-icons-round { color: white; font-size: 20px; }
+  .t-circle.pending { background: #f5f5f5; border-color: #ddd; }
+  .t-circle.pending .material-icons-round { color: #ccc; font-size: 18px; }
+  .t-line { width: 2px; flex: 1; min-height: 24px; }
+  .t-line.done    { background: rgba(212,146,10,0.3); }
+  .t-line.pending { background: #e0e0e0; }
+
+  .t-content {
+    flex: 1; padding: 0 0 24px;
+  }
+  .t-box {
+    border-radius: 10px; padding: 16px; border: 1px solid;
+  }
+  .t-box.done    { background: var(--gold-light); border-color: rgba(212,146,10,0.3); }
+  .t-box.pending { background: #fafafa; border-color: #e8e8e8; }
+  .t-etapa { font-size: 14px; font-weight: 800; }
+  .t-etapa.done    { color: var(--black); }
+  .t-etapa.pending { color: var(--light); }
+  .t-status-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px;
+  }
+  .t-status-badge.done    { background: rgba(212,146,10,0.15); color: var(--gold-dark); }
+  .t-status-badge.pending { background: #e8e8e8; color: var(--light); }
+  .t-desc { font-size: 12.5px; line-height: 1.4; margin: 6px 0 8px; }
+  .t-desc.done    { color: var(--mid); }
+  .t-desc.pending { color: var(--light); }
+  .t-meta { display: flex; align-items: center; gap: 4px; font-size: 11.5px; }
+
+  .section-mini-title { font-size: 11px; font-weight: 800; color: var(--light); letter-spacing: 1px; margin-bottom: 10px; }
+
+  /* Footer modal */
+  .modal-footer-note {
+    background: var(--gold-light); border-radius: 12px; padding: 20px;
+    display: flex; gap: 12px; align-items: flex-start; border: 1px solid rgba(212,146,10,0.3);
+    margin-top: 20px;
+  }
+  .modal-footer-note .material-icons-round { color: var(--gold-dark); font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .modal-footer-note p { font-size: 12px; color: var(--gold-dark); line-height: 1.5; }
+
+  /* Action buttons in modal */
+  .modal-actions { display: flex; gap: 12px; margin-top: 18px; }
+  .btn-blue  { flex: 1; padding: 13px; background: var(--blue);  color: white; border: none; border-radius: 8px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn-green { flex: 1; padding: 13px; background: var(--green); color: white; border: none; border-radius: 8px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+  /* Doc section rows */
+  .doc-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .doc-label { width: 90px; font-size: 12px; color: var(--light); font-weight: 600; flex-shrink: 0; }
+  .doc-val   { font-size: 12.5px; font-weight: 500; }
+  .doc-section-title { font-size: 11px; font-weight: 800; color: var(--light); letter-spacing: 1px; margin-bottom: 10px; }
+
+  /* Progress bar in modal */
+  .progress-section {
+    background: white; border-radius: 14px; padding: 20px;
+    border: 1px solid #e8e8e8; margin-bottom: 20px;
+  }
+  .progress-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .progress-label { font-size: 12px; font-weight: 800; color: var(--light); letter-spacing: 1px; }
+  .progress-count { font-size: 12.5px; font-weight: 700; color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .login-left { display: none; }
+    .login-right { padding: 32px 24px; }
+    .cards-row { flex-direction: column; }
+    .two-col { flex-direction: column; }
+    .sidebar { width: 200px; }
+  }
+
+  /* Spinner */
+  .spinner {
+    width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Fade in animation */
+  .page.active { animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════ -->
+<div id="app-shell">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-arrows"><span>›</span><span>›</span><span>›</span></div>
+      <div class="sidebar-brand">EASIER</div>
+    </div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigate(0)">
+      <span class="material-icons-round">home</span>
+      <span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" data-page="formularios" onclick="navigate(1)">
+      <span class="material-icons-round">assignment</span>
+      <span class="nav-label">Formulários</span>
+    </div>
+    <div class="nav-item" data-page="abrir" onclick="navigate(2)">
+      <span class="material-icons-round">add_circle_outline</span>
+      <span class="nav-label">Abrir Chamado</span>
+    </div>
+    <div class="nav-item" data-page="perfis" onclick="navigate(3)">
+      <span class="material-icons-round">people</span>
+      <span class="nav-label">Perfis</span>
+    </div>
+    <div class="nav-item" data-page="veiculos" onclick="navigate(4)">
+      <span class="material-icons-round">directions_car</span>
+      <span class="nav-label">Veículos</span>
+    </div>
+    <div class="nav-item" data-page="notificacoes" onclick="navigate(5)">
+      <span class="material-icons-round">notifications</span>
+      <span class="nav-label">Notificações</span>
+      <span class="nav-badge" id="notif-badge">2</span>
+    </div>
+    <div class="nav-item" data-page="mensagens" onclick="navigate(6)">
+      <span class="material-icons-round">chat</span>
+      <span class="nav-label">Mensagens</span>
+      <span class="nav-badge" id="msg-badge">2</span>
+    </div>
+    <div class="nav-item" data-page="sair" onclick="navigate(7)">
+      <span class="material-icons-round">logout</span>
+      <span class="nav-label">Sair</span>
+    </div>
+    <div class="sidebar-spacer"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <span class="topbar-role" id="topbar-user-role">Administrador</span>
+      <div class="topbar-sep"></div>
+      <div class="topbar-user" onclick="toggleAdminPopup()">
+        <div class="avatar">
+          <span class="material-icons-round">person</span>
+          <span class="avatar-dot" id="avatar-dot"></span>
+        </div>
+        <span class="topbar-name" id="topbar-user-name">Carlos Administrador</span>
+        <span class="material-icons-round topbar-arrow">keyboard_arrow_down</span>
+        <!-- Admin popup -->
+        <div class="admin-popup" id="admin-popup">
+          <div class="admin-avatar-big"><span class="material-icons-round">person</span></div>
+          <div class="admin-popup-name" id="popup-user-name">Carlos Administrador</div>
+          <div class="admin-popup-role" id="popup-user-role">Administrador do Sistema</div>
+          <hr style="border:none;border-top:1px solid #eee;margin-bottom:14px">
+          <div class="admin-info-row">
+            <span class="material-icons-round">email</span>
+            <div><div class="admin-info-label">E-mail</div><div class="admin-info-val" id="popup-user-email">carlos.admin@blascarMultimarcas.com.br</div></div>
+          </div>
+          <div class="admin-info-row">
+            <span class="material-icons-round">business</span>
+            <div><div class="admin-info-label">Departamento</div><div class="admin-info-val">Tecnologia da Informação</div></div>
+          </div>
+          <div class="admin-info-row">
+            <span class="material-icons-round">phone</span>
+            <div><div class="admin-info-label">Telefone</div><div class="admin-info-val">(11) 99999-0000</div></div>
+          </div>
+          <hr style="border:none;border-top:1px solid #eee;margin:10px 0">
+          <button class="btn-logout" onclick="navigate(7)"><span class="material-icons-round" style="font-size:16px">logout</span> Sair da conta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGES -->
+    <div class="page-area">
+
+      <!-- ══ PAGE 0: DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div class="page-title">DASHBOARD</div>
+          <div class="page-title-bar"></div>
+          <div class="page-subtitle">Painel de controle — gestão de garantias e atendimentos.</div>
+        </div>
+
+        <div class="cards-row">
+          <div class="dash-card" onclick="navigate(1,'andamento')">
+            <div class="dash-icon" style="background:rgba(224,123,0,0.12)"><span class="material-icons-round" style="color:var(--orange)">description</span></div>
+            <div>
+              <div class="dash-value" id="cnt-andamento">1</div>
+              <div class="dash-name">Em Andamento</div>
+              <div class="dash-sub">Garantias ativas</div>
+            </div>
+            <span class="material-icons-round dash-arrow" style="color:var(--orange)">arrow_forward_ios</span>
+          </div>
+          <div class="dash-card" onclick="navigate(1,'concluido')">
+            <div class="dash-icon" style="background:rgba(76,175,80,0.12)"><span class="material-icons-round" style="color:var(--green)">check_circle_outline</span></div>
+            <div>
+              <div class="dash-value" id="cnt-concluido">1</div>
+              <div class="dash-name">Concluídos</div>
+              <div class="dash-sub">Finalizados</div>
+            </div>
+            <span class="material-icons-round dash-arrow" style="color:var(--green)">arrow_forward_ios</span>
+          </div>
+          <div class="dash-card" onclick="navigate(1,'aguardando')">
+            <div class="dash-icon" style="background:rgba(21,101,192,0.12)"><span class="material-icons-round" style="color:var(--blue)">access_time</span></div>
+            <div>
+              <div class="dash-value" id="cnt-aguardando">1</div>
+              <div class="dash-name">Aguardando</div>
+              <div class="dash-sub">Pendentes</div>
+            </div>
+            <span class="material-icons-round dash-arrow" style="color:var(--blue)">arrow_forward_ios</span>
+          </div>
+          <div class="dash-card" onclick="navigate(1)">
+            <div class="dash-icon" style="background:rgba(212,146,10,0.12)"><span class="material-icons-round" style="color:var(--gold)">bar_chart</span></div>
+            <div>
+              <div class="dash-value" id="cnt-total">3</div>
+              <div class="dash-name">Total</div>
+              <div class="dash-sub">Todos os registros</div>
+            </div>
+            <span class="material-icons-round dash-arrow" style="color:var(--gold)">arrow_forward_ios</span>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="col-55">
+            <div class="card">
+              <div class="card-hdr">
+                <div class="card-title">FORMULÁRIOS RECENTES</div>
+                <span class="link-gold" onclick="navigate(1)">Ver todos</span>
+              </div>
+              <div id="dash-chamados-list"></div>
+              <button class="btn-outlined" onclick="navigate(1)">Ver todos os formulários</button>
+            </div>
+          </div>
+          <div class="col-45">
+            <div class="card">
+              <div class="card-hdr">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="card-title">MENSAGENS</div>
+                  <span class="nav-badge" id="dash-msg-badge">2</span>
+                </div>
+                <span class="link-gold" onclick="navigate(6)">Ver todas</span>
+              </div>
+              <div id="dash-msg-list"></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;text-align:center;font-size:11px;color:#bbb">© 2026 BlasCar Multimarcas — Todos os direitos reservados.</div>
+      </div>
+
+      <!-- ══ PAGE 1: FORMULÁRIOS ══ -->
+      <div class="page" id="page-formularios">
+        <div class="page-header">
+          <div class="page-title">FORMULÁRIOS</div>
+          <div class="page-title-bar"></div>
+          <div class="page-subtitle">Gerencie todos os chamados e processos de garantia.</div>
+        </div>
+        <div class="filter-chips" id="form-chips"></div>
+        <div id="form-list"></div>
+      </div>
+
+      <!-- ══ PAGE 2: ABRIR CHAMADO ══ -->
+      <div class="page" id="page-abrir">
+        <div id="abrir-form-view">
+          <div class="page-header">
+            <div class="page-title">ABRIR CHAMADO</div>
+            <div class="page-title-bar"></div>
+            <div class="page-subtitle">Inicie um novo processo de garantia ou atendimento.</div>
+          </div>
+          <div class="card">
+            <div style="margin-bottom:14px;font-size:13px;font-weight:700">Categoria</div>
+            <div class="cat-chips" id="cat-chips">
+              <div class="cat-chip active" onclick="selectCat(this,'Garantia')">Garantia</div>
+              <div class="cat-chip" onclick="selectCat(this,'Manutenção')">Manutenção</div>
+              <div class="cat-chip" onclick="selectCat(this,'Revisão')">Revisão</div>
+              <div class="cat-chip" onclick="selectCat(this,'Outros')">Outros</div>
+            </div>
+            <div class="two-fields">
+              <div class="field-group">
+                <label>Cliente *</label>
+                <div style="position:relative">
+                  <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;pointer-events:none">person</span>
+                  <input class="input-field" id="nc-cliente" placeholder="Ex: João Silva">
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Veículo / Placa *</label>
+                <div style="position:relative">
+                  <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;pointer-events:none">directions_car</span>
+                  <input class="input-field" id="nc-veiculo" placeholder="Ex: Toyota Corolla — ABC-1234">
+                </div>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Título *</label>
+              <div style="position:relative">
+                <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;pointer-events:none">title</span>
+                <input class="input-field" id="nc-titulo" placeholder="Ex: Problema no ar-condicionado">
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Descrição *</label>
+              <textarea class="textarea-field" id="nc-descricao" placeholder="Descreva detalhadamente o problema..."></textarea>
+            </div>
+            <button class="btn-primary" style="margin-top:8px" onclick="abrirChamado()">
+              <span style="display:flex;align-items:center;justify-content:center;gap:8px">
+                <span class="material-icons-round" style="font-size:18px">send</span> Abrir formulário
+              </span>
+            </button>
+          </div>
+        </div>
+        <div id="abrir-success-view" class="hidden">
+          <div class="success-screen">
+            <div class="success-icon"><span class="material-icons-round">check_circle</span></div>
+            <div style="font-size:20px;font-weight:800;margin-bottom:8px">Formulário aberto com sucesso!</div>
+            <div style="color:var(--mid);margin-bottom:24px">O processo de garantia foi iniciado.</div>
+            <button class="btn-primary" style="width:auto;padding:14px 32px" onclick="resetAbrir()">Abrir outro chamado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE 3: PERFIS ══ -->
+      <div class="page" id="page-perfis">
+        <div class="page-header">
+          <div class="page-title">PERFIS</div>
+          <div class="page-title-bar"></div>
+          <div class="page-subtitle">Gerencie os colaboradores da empresa e envie mensagens.</div>
+        </div>
+        <div class="filter-chips" id="perfis-chips"></div>
+        <div id="perfis-list"></div>
+      </div>
+
+      <!-- ══ PAGE 4: VEÍCULOS ══ -->
+      <div class="page" id="page-veiculos">
+        <div class="page-header">
+          <div class="page-title">VEÍCULOS</div>
+          <div class="page-title-bar"></div>
+          <div class="page-subtitle">Consulte a frota em garantia e histórico de atendimentos.</div>
+        </div>
+        <div id="veiculos-list"></div>
+      </div>
+
+      <!-- ══ PAGE 5: NOTIFICAÇÕES ══ -->
+      <div class="page" id="page-notificacoes">
+        <div class="notif-header">
+          <div>
+            <div class="page-title">NOTIFICAÇÕES</div>
+            <div class="page-title-bar"></div>
+            <div class="page-subtitle">Alertas, atualizações e informações do sistema.</div>
+          </div>
+          <button class="btn-text" id="mark-all-btn" onclick="marcarTodasLidas()">Marcar todas como lidas</button>
+        </div>
+        <div id="notif-list"></div>
+      </div>
+
+      <!-- ══ PAGE 7: SAIR ══ -->
+      <div class="page" id="page-sair" style="height:100%">
+        <div class="sair-wrap">
+          <div class="sair-card">
+            <div class="sair-icon"><span class="material-icons-round">logout</span></div>
+            <div class="sair-title">Deseja sair do sistema?</div>
+            <div class="sair-sub">Você será desconectado do EASIER.<br>Todas as alterações não salvas serão perdidas.</div>
+            <div class="sair-warning">
+              <span class="material-icons-round">info_outline</span>
+              <p>Sua sessão será encerrada e você precisará fazer login novamente.</p>
+            </div>
+            <div class="sair-btns">
+              <button class="btn-cancel" onclick="navigate(0)">Cancelar</button>
+              <button class="btn-danger" onclick="doLogout()"><span class="material-icons-round" style="font-size:16px">logout</span> Confirmar saída</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-area -->
+
+    <!-- ══ PAGE 6: MENSAGENS (full layout, outside page-area scroll) ══ -->
+    <div id="page-mensagens">
+      <div class="msg-sidebar">
+        <div class="msg-sidebar-header">
+          <div class="msg-sidebar-title">MENSAGENS</div>
+        </div>
+        <div class="msg-search-wrap">
+          <span class="material-icons-round msg-search-icon">search</span>
+          <input class="msg-search" id="msg-search-input" placeholder="Pesquisar conversa..." oninput="filterMsgs(this.value)">
+        </div>
+        <div class="msg-list" id="msg-list-panel"></div>
+      </div>
+      <div class="msg-content" id="msg-content-area">
+        <div class="msg-empty" id="msg-empty">
+          <span class="material-icons-round">forum</span>
+          <p>Selecione uma conversa</p>
+          <p class="msg-empty-sub">Escolha um contato à esquerda para começar</p>
+        </div>
+        <div id="msg-chat-view" style="display:none;flex-direction:column;height:100%">
+          <div class="msg-content-header">
+            <div class="msg-content-avatar"><span class="material-icons-round">person</span></div>
+            <div>
+              <div class="msg-content-name" id="msg-chat-name"></div>
+              <div class="msg-content-cargo" id="msg-chat-cargo"></div>
+            </div>
+            <div class="msg-header-actions">
+              <button class="msg-header-btn" title="Perfil"><span class="material-icons-round">person_outline</span></button>
+            </div>
+          </div>
+          <div class="msg-body" id="msg-body"></div>
+          <div class="msg-input-wrap">
+            <textarea class="msg-input-box" id="msg-input" placeholder="Escreva sua mensagem..." rows="1"
+              onkeydown="handleMsgKey(event)" oninput="autoGrow(this)"></textarea>
+            <button class="btn-send" id="btn-send" onclick="sendMsg()">
+              <span class="material-icons-round" style="font-size:16px">send</span> Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+
+<!-- ═══════════════════════════════════════════════
+     MODAL (Formulário Detail / Veículo / Perfil / Notif)
+═══════════════════════════════════════════════ -->
+<div class="overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-topbar">
+      <div class="modal-topbar-bar"></div>
+      <div class="modal-topbar-title" id="modal-title">Detalhe</div>
+      <button class="modal-close" onclick="closeModalDirect()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+let chamados = [
+  { id: 1001, titulo: 'Garantia — Ar-condicionado', descricao: 'Ar-condicionado não gela. Ruído anormal ao ligar o compressor.', categoria: 'Garantia', veiculo: 'Toyota Corolla XEi — ABC-1234', cliente: 'João Silva', dataAbertura: new Date(2026,5,4,10,30), status: 'andamento',
+    historico: [
+      { etapa:'Abertura da Garantia', descricao:'Cliente solicitou abertura da garantia via portal.', responsavel:'Sistema', data: new Date(2026,5,4,10,30), concluido:true },
+      { etapa:'Análise Técnica', descricao:'Técnico João realizou diagnóstico do compressor.', responsavel:'João Mecânico', data: new Date(2026,5,4,14,0), concluido:true },
+      { etapa:'Aprovação Seguradora', descricao:'Aguardando aprovação da seguradora para substituição.', responsavel:'Seguradora', data: new Date(2026,5,5,9,0), concluido:false },
+      { etapa:'Substituição de Peça', descricao:'Peça ainda não substituída.', responsavel:'Preparador', data: new Date(2026,5,5,9,0), concluido:false },
+      { etapa:'Finalização da Garantia', descricao:'Pendente.', responsavel:'Admin', data: new Date(2026,5,5,9,0), concluido:false },
+    ]
+  },
+  { id: 1002, titulo: 'Garantia — Suspensão', descricao: 'Barulho de estalos ao passar por lombadas e buracos.', categoria: 'Garantia', veiculo: 'Honda HRV EXL — DEF-5678', cliente: 'Maria Souza', dataAbertura: new Date(2026,4,28,9,15), status: 'concluido',
+    historico: [
+      { etapa:'Abertura da Garantia', descricao:'Cliente abriu chamado por barulho na suspensão.', responsavel:'Sistema', data: new Date(2026,4,28,9,15), concluido:true },
+      { etapa:'Análise Técnica', descricao:'Diagnóstico: barra estabilizadora desgastada.', responsavel:'Pedro Técnico', data: new Date(2026,4,29,10,0), concluido:true },
+      { etapa:'Aprovação Seguradora', descricao:'Aprovado pela seguradora em 30/05/2026.', responsavel:'Seguradora', data: new Date(2026,4,30,8,0), concluido:true },
+      { etapa:'Substituição de Peça', descricao:'Barra estabilizadora substituída com sucesso.', responsavel:'Preparador', data: new Date(2026,4,30,15,0), concluido:true },
+      { etapa:'Finalização da Garantia', descricao:'Garantia concluída. Cliente notificado.', responsavel:'Admin', data: new Date(2026,4,31,17,0), concluido:true },
+    ]
+  },
+  { id: 1003, titulo: 'Garantia — Pintura', descricao: 'Oxidação identificada na porta traseira esquerda.', categoria: 'Garantia', veiculo: 'Jeep Compass — GHI-9012', cliente: 'Pedro Alves', dataAbertura: new Date(2026,5,5,14,0), status: 'aguardando',
+    historico: [
+      { etapa:'Abertura da Garantia', descricao:'Cliente reportou oxidação na carroceria.', responsavel:'Sistema', data: new Date(2026,5,5,14,0), concluido:true },
+      { etapa:'Análise Técnica', descricao:'Aguardando vistoria do preparador.', responsavel:'Preparador', data: new Date(2026,5,5,14,0), concluido:false },
+      { etapa:'Aprovação Seguradora', descricao:'Pendente análise técnica.', responsavel:'Seguradora', data: new Date(2026,5,5,14,0), concluido:false },
+      { etapa:'Substituição de Peça', descricao:'Pendente.', responsavel:'Preparador', data: new Date(2026,5,5,14,0), concluido:false },
+      { etapa:'Finalização da Garantia', descricao:'Pendente.', responsavel:'Admin', data: new Date(2026,5,5,14,0), concluido:false },
+    ]
+  },
+];
+
+const veiculos = [
+  { placa:'ABC-1234', modelo:'Toyota Corolla XEi', ano:'2023', cor:'Prata', km:'18.500 km', cliente:'João Silva', chassi:'9BW123456789001', garantiaAte:'04/2028', status:'andamento' },
+  { placa:'DEF-5678', modelo:'Honda HRV EXL',      ano:'2022', cor:'Branco',km:'32.100 km', cliente:'Maria Souza',chassi:'9BW987654321002', garantiaAte:'08/2027', status:'concluido' },
+  { placa:'GHI-9012', modelo:'Jeep Compass',       ano:'2024', cor:'Preto', km:'8.200 km',  cliente:'Pedro Alves',chassi:'9BW555444333003', garantiaAte:'01/2029', status:'aguardando' },
+  { placa:'JKL-3456', modelo:'Volkswagen T-Cross',  ano:'2023', cor:'Azul',  km:'21.000 km', cliente:'Ana Lima',   chassi:'9BW111222333004', garantiaAte:'06/2028', status:'concluido' },
+];
+
+let notificacoes = [
+  { titulo:'Garantia #1001 — Ação Necessária', mensagem:'A seguradora solicitou documentação adicional para aprovação.', data: new Date(2026,5,5,9,0), lida:false, tipo:'alerta' },
+  { titulo:'Novo chamado aberto', mensagem:'Pedro Alves abriu chamado de garantia para o Jeep Compass.', data: new Date(2026,5,5,14,0), lida:false, tipo:'info' },
+  { titulo:'Garantia #1002 concluída', mensagem:'Suspensão do HRV de Maria Souza foi reparada com sucesso.', data: new Date(2026,4,31,17,0), lida:true, tipo:'sucesso' },
+  { titulo:'Vencimento de garantia próximo', mensagem:'O veículo DEF-5678 tem garantia expirando em 08/2027.', data: new Date(2026,4,25,8,0), lida:true, tipo:'alerta' },
+  { titulo:'Mensagem do Financeiro', mensagem:'Lucas Financeiro enviou uma mensagem sobre o chamado #1001.', data: new Date(2026,5,4,16,0), lida:false, tipo:'mensagem' },
+];
+
+const perfis = [
+  { nome:'Lucas Financeiro',   email:'lucas.fin@blascarMultimarcas.com.br',    telefone:'(11) 98888-1111', depto:'Financeiro',  tipo:'financeiro', online:true },
+  { nome:'Roberto Preparador', email:'roberto.prep@blascarMultimarcas.com.br', telefone:'(11) 97777-2222', depto:'Preparação',  tipo:'preparador', online:false },
+  { nome:'Ana Vendedora',      email:'ana.vend@blascarMultimarcas.com.br',     telefone:'(11) 96666-3333', depto:'Vendas',      tipo:'vendedor', online:true },
+  { nome:'Marcos Vendedor',    email:'marcos.vend@blascarMultimarcas.com.br',  telefone:'(11) 95555-4444', depto:'Vendas',      tipo:'vendedor', online:false },
+  { nome:'Carla Preparadora',  email:'carla.prep@blascarMultimarcas.com.br',   telefone:'(11) 94444-5555', depto:'Preparação',  tipo:'preparador', online:true },
+];
+
+let mensagens = [
+  { remetente:'Lucas Financeiro', cargo:'Financeiro', online:true, lida:false,
+    conversa:[
+      { de:'deles', texto:'Admin, preciso da documentação do chamado #1001 para processar o reembolso da seguradora.', hora: new Date(2026,5,4,16,0) },
+      { de:'deles', texto:'É urgente, a seguradora fecha prazo amanhã às 18h.', hora: new Date(2026,5,4,16,3) },
+    ]
+  },
+  { remetente:'Ana Vendedora', cargo:'Vendedor', online:true, lida:true,
+    conversa:[
+      { de:'deles', texto:'O cliente João Silva perguntou sobre o prazo de conclusão da garantia do Corolla.', hora: new Date(2026,5,4,11,30) },
+      { de:'eu', texto:'Estimativa é até sexta-feira. Vou avisar quando tiver confirmação.', hora: new Date(2026,5,4,11,45) },
+      { de:'deles', texto:'Perfeito, obrigada! Vou informar o cliente.', hora: new Date(2026,5,4,11,47) },
+    ]
+  },
+  { remetente:'Roberto Preparador', cargo:'Preparador', online:false, lida:false,
+    conversa:[
+      { de:'deles', texto:'Peça do ar-condicionado (compressor) está disponível no estoque para substituição.', hora: new Date(2026,5,5,8,0) },
+      { de:'deles', texto:'Posso instalar hoje à tarde se tiver autorização.', hora: new Date(2026,5,5,8,2) },
+    ]
+  },
+  { remetente:'Carla Preparadora', cargo:'Preparador', online:true, lida:true,
+    conversa:[
+      { de:'deles', texto:'Realizei a vistoria do Jeep Compass. Oxidação confirmada. Aguardando sua aprovação.', hora: new Date(2026,5,5,15,0) },
+      { de:'eu', texto:'Aprovado. Pode iniciar o processo de cobertura.', hora: new Date(2026,5,5,15,10) },
+      { de:'deles', texto:'Certo! Vou iniciar o procedimento agora.', hora: new Date(2026,5,5,15,12) },
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function fmt(d) {
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} às ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function statusColor(s) { return s==='andamento'?'var(--orange)':s==='concluido'?'var(--green)':'var(--blue)'; }
+function statusBg(s)    { return s==='andamento'?'var(--orange-bg)':s==='concluido'?'var(--green-bg)':'var(--blue-bg)'; }
+function statusLabel(s) { return s==='andamento'?'Em andamento':s==='concluido'?'Concluído':'Aguardando'; }
+function badgeHTML(s)   { return `<span class="badge badge-${s==='andamento'?'orange':s==='concluido'?'green':'blue'}">${statusLabel(s)}</span>`; }
+
+function tipoColor(t)  { return t==='financeiro'?'var(--green)':t==='preparador'?'var(--blue)':'var(--orange)'; }
+function tipoBg(t)     { return t==='financeiro'?'var(--green-bg)':t==='preparador'?'var(--blue-bg)':'var(--orange-bg)'; }
+function tipoLabel(t)  { return t==='financeiro'?'Financeiro':t==='preparador'?'Preparador':'Vendedor'; }
+function tipoIcon(t)   { return t==='financeiro'?'attach_money':t==='preparador'?'build':'handshake'; }
+
+function notiColor(t)  { return t==='alerta'?'var(--orange)':t==='sucesso'?'var(--green)':t==='mensagem'?'var(--blue)':'var(--gold)'; }
+function notiIcon(t)   { return t==='alerta'?'warning_amber':t==='sucesso'?'check_circle_outline':t==='mensagem'?'chat_bubble_outline':'info_outline'; }
+function notiBg(t)     { return t==='alerta'?'var(--orange-bg)':t==='sucesso'?'var(--green-bg)':t==='mensagem'?'var(--blue-bg)':'rgba(212,146,10,0.1)'; }
+
+function naoLidas() { return notificacoes.filter(n=>!n.lida).length; }
+function msgNaoLidas() { return mensagens.filter(m=>!m.lida).length; }
+
+
+function updateBadges() {
+  const nl = naoLidas(); const ml = msgNaoLidas();
+  document.getElementById('notif-badge').textContent = nl;
+  document.getElementById('notif-badge').style.display = nl>0?'':'none';
+  document.getElementById('msg-badge').textContent = ml;
+  document.getElementById('msg-badge').style.display = ml>0?'':'none';
+  const dot = document.getElementById('avatar-dot');
+  dot.style.display = (nl+ml)>0?'':'none';
+  const db = document.getElementById('dash-msg-badge');
+  if(db){ db.textContent=ml; db.style.display=ml>0?'':'none'; }
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+let currentPage = 'dashboard';
+let formFiltro = 'todos';
+let perfisFiltro = 'todos';
+let selectedMsg = null;
+
+function navigate(idx, filtro) {
+  // close popup
+  document.getElementById('admin-popup').classList.remove('open');
+
+  const pages = ['dashboard','formularios','abrir','perfis','veiculos','notificacoes','mensagens','sair'];
+  const pageId = pages[idx];
+
+  // hide all
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-mensagens').classList.remove('active');
+
+  // nav highlight
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[idx].classList.add('active');
+
+  currentPage = pageId;
+
+  if(pageId === 'mensagens') {
+    document.getElementById('page-mensagens').classList.add('active');
+    renderMensagens();
+  } else {
+    document.getElementById('page-' + pageId).classList.add('active');
+  }
+
+  // Render content
+  if(pageId === 'dashboard') renderDashboard();
+  if(pageId === 'formularios') { formFiltro = filtro||'todos'; renderFormularios(); }
+  if(pageId === 'perfis') { perfisFiltro = filtro||'todos'; renderPerfis(); }
+  if(pageId === 'veiculos') renderVeiculos();
+  if(pageId === 'notificacoes') renderNotificacoes();
+
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════
+// AUTH — LOGIN / CADASTRO
+// ═══════════════════════════════════════════════
+let authTipoLogin = 'cliente';
+let authTipoCadastro = 'cliente';
+
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v;
+}
+function maskTel(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
+  el.value = v;
+}
+
+function showAuthMsg(id, text, tipo) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'auth-msg ' + tipo;
+}
+
+function doLogout() {
+  document.getElementById('app-shell').classList.remove('visible');
+  document.getElementById('auth-wrapper').style.display = 'flex';
+  document.getElementById('l-senha').value = '';
+  showScreen('login');
+}
+
+let currentUser = { nome: 'Carlos Administrador', email: 'carlos.admin@blascarMultimarcas.com.br', tipo: 'admin' };
+
+// ═══════════════════════════════════════════════
+// ADMIN POPUP
+// ═══════════════════════════════════════════════
+function toggleAdminPopup() {
+  document.getElementById('admin-popup').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const user = document.querySelector('.topbar-user');
+  const pop = document.getElementById('admin-popup');
+  if(pop.classList.contains('open') && !user.contains(e.target)) pop.classList.remove('open');
+});
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard() {
+  const andamento = chamados.filter(c=>c.status==='andamento').length;
+  const concluido = chamados.filter(c=>c.status==='concluido').length;
+  const aguardando= chamados.filter(c=>c.status==='aguardando').length;
+  document.getElementById('cnt-andamento').textContent = andamento;
+  document.getElementById('cnt-concluido').textContent = concluido;
+  document.getElementById('cnt-aguardando').textContent = aguardando;
+  document.getElementById('cnt-total').textContent = chamados.length;
+
+  // Chamados list
+  const cl = document.getElementById('dash-chamados-list');
+  cl.innerHTML = chamados.slice(0,3).map(c => `
+    <div class="tile" onclick="openChamadoModal(${c.id})">
+      <div class="tile-dot" style="background:${statusColor(c.status)}"></div>
+      <div class="tile-info">
+        <div class="tile-title">${c.titulo}</div>
+        <div class="tile-client">${c.cliente}</div>
+      </div>
+      ${badgeHTML(c.status)}
+      <span class="material-icons-round tile-chevron">chevron_right</span>
+    </div>`).join('');
+
+  // Msgs list
+  const ml = document.getElementById('dash-msg-list');
+  ml.innerHTML = mensagens.slice(0,4).map((m,i) => `
+    <div class="msg-tile" onclick="navigate(6); selectMsg(${i})">
+      <div class="msg-avatar" style="background:${m.lida?'#f5f5f5':'var(--gold-light)'}">
+        <span class="material-icons-round" style="color:${m.lida?'var(--light)':'var(--gold)'}">person</span>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="msg-sender">${m.remetente}</div>
+        <div class="msg-preview">${lastMsg(m).texto}</div>
+      </div>
+      ${!m.lida?'<div class="unread-dot"></div>':''}
+    </div>`).join('');
+  const db = document.getElementById('dash-msg-badge');
+  const ml2 = msgNaoLidas();
+  if(db){db.textContent=ml2;db.style.display=ml2>0?'':'none';}
+}
+
+// ═══════════════════════════════════════════════
+// FORMULÁRIOS
+// ═══════════════════════════════════════════════
+function renderFormularios() {
+  // chips
+  const chips = document.getElementById('form-chips');
+  const filtros = [
+    {key:'todos', label:'Todos', color:'gold'},
+    {key:'andamento', label:'Em Andamento', color:'orange'},
+    {key:'concluido', label:'Concluídos', color:'green'},
+    {key:'aguardando', label:'Aguardando', color:'blue'},
+  ];
+  chips.innerHTML = filtros.map(f => {
+    const cnt = f.key==='todos'?chamados.length:chamados.filter(c=>c.status===f.key).length;
+    const active = formFiltro===f.key?'active-'+f.color:'';
+    return `<div class="chip ${active}" onclick="setFormFiltro('${f.key}')">
+      ${f.label}<span class="chip-count" style="${!active?`background:${f.color==='gold'?'rgba(212,146,10,0.12)':f.color==='orange'?'rgba(224,123,0,0.1)':f.color==='green'?'rgba(76,175,80,0.1)':'rgba(21,101,192,0.1)'};color:${f.color==='gold'?'var(--gold)':f.color==='orange'?'var(--orange)':f.color==='green'?'var(--green)':'var(--blue)'}`:''}">${cnt}</span>
+    </div>`;
+  }).join('');
+
+  const lista = formFiltro==='todos'?chamados:chamados.filter(c=>c.status===formFiltro);
+  const fl = document.getElementById('form-list');
+  fl.innerHTML = lista.map(c => {
+    const done = c.historico.filter(h=>h.concluido).length;
+    const total = c.historico.length;
+    const pct = Math.round(done/total*100);
+    return `
+    <div class="form-card" onclick="openChamadoModal(${c.id})">
+      <div class="form-card-hdr">
+        <div class="form-card-icon"><span class="material-icons-round">assignment</span></div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="form-card-title">${c.titulo}</div>
+              <div class="form-card-client">👤 ${c.cliente} · 🚗 ${c.veiculo}</div>
+              <div class="form-card-sub">#${c.id} · Aberto em ${fmt(c.dataAbertura)}</div>
+            </div>
+            ${badgeHTML(c.status)}
+          </div>
+          <div class="prog-bar-wrap" style="margin-top:10px">
+            <div class="prog-bar" style="width:${pct}%;background:${c.status==='concluido'?'var(--green)':'var(--gold)'}"></div>
+          </div>
+          <div style="font-size:11px;color:var(--light);margin-top:4px">${done}/${total} etapas concluídas</div>
+        </div>
+      </div>
+      <div class="form-card-actions" onclick="event.stopPropagation()">
+        <button class="btn-sm btn-sm-gold" onclick="openChamadoModal(${c.id})"><span class="material-icons-round">visibility</span> Ver detalhes</button>
+        <button class="btn-sm btn-sm-blue" onclick="openDocModal(${c.id})"><span class="material-icons-round">description</span> Documento</button>
+        ${c.status!=='concluido'?`<button class="btn-sm btn-sm-doc" onclick="finalizarChamado(${c.id})"><span class="material-icons-round">check_circle</span> Finalizar</button>`:''}
+      </div>
+    </div>`;
+  }).join('') || '<div style="text-align:center;color:var(--light);padding:40px">Nenhum chamado encontrado.</div>';
+}
+
+function setFormFiltro(f) { formFiltro = f; renderFormularios(); }
+
+// ═══════════════════════════════════════════════
+// CHAMADO MODAL
+// ═══════════════════════════════════════════════
+function openChamadoModal(id) {
+  const c = chamados.find(x=>x.id===id);
+  if(!c) return;
+  const done = c.historico.filter(h=>h.concluido).length;
+  const total = c.historico.length;
+  const pct = Math.round(done/total*100);
+
+  document.getElementById('modal-title').textContent = `FORMULÁRIO #${c.id}`;
+  document.getElementById('modal-body').innerHTML = `
+    <!-- Info Card -->
+    <div style="background:white;border-radius:14px;padding:24px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <div style="font-size:18px;font-weight:800">${c.titulo}</div>
+          <div style="font-size:12px;color:var(--light);margin-top:4px">#${c.id} · ${c.categoria}</div>
+        </div>
+        ${badgeHTML(c.status)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="info-row"><span class="material-icons-round">person</span><div><div class="info-label">Cliente</div><div class="info-val">${c.cliente}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">directions_car</span><div><div class="info-label">Veículo</div><div class="info-val">${c.veiculo}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">calendar_today</span><div><div class="info-label">Abertura</div><div class="info-val">${fmt(c.dataAbertura)}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">category</span><div><div class="info-label">Categoria</div><div class="info-val">${c.categoria}</div></div></div>
+      </div>
+      <div style="margin-top:16px;border-top:1px solid #eee;padding-top:16px">
+        <div class="section-mini-title">DESCRIÇÃO DO PROBLEMA</div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13.5px;line-height:1.6">${c.descricao}</div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-section">
+      <div class="progress-hdr">
+        <div class="progress-label">PROGRESSO DA GARANTIA</div>
+        <div class="progress-count">${done}/${total} etapas</div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar" style="width:${pct}%;background:${c.status==='concluido'?'var(--green)':'var(--gold)'}"></div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div style="background:white;border-radius:14px;padding:24px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div class="section-mini-title">FLUXO COMPLETO DA GARANTIA</div>
+      <div style="height:16px"></div>
+      <div class="timeline">
+        ${c.historico.map((h,i) => `
+          <div class="timeline-item">
+            <div class="timeline-track">
+              <div class="t-circle ${h.concluido?'done':'pending'}">
+                <span class="material-icons-round">${h.concluido?'check_rounded':'hourglass_top'}</span>
+              </div>
+              ${i<c.historico.length-1?`<div class="t-line ${h.concluido?'done':'pending'}"></div>`:''}
+            </div>
+            <div class="t-content">
+              <div class="t-box ${h.concluido?'done':'pending'}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                  <div class="t-etapa ${h.concluido?'done':'pending'}">${h.etapa}</div>
+                  <span class="t-status-badge ${h.concluido?'done':'pending'}">${h.concluido?'Concluído':'Pendente'}</span>
+                </div>
+                <div class="t-desc ${h.concluido?'done':'pending'}">${h.descricao}</div>
+                <div class="t-meta">
+                  <span class="material-icons-round" style="font-size:13px;color:${h.concluido?'var(--gold)':'var(--light)'}">person_outline</span>
+                  <span style="font-size:11.5px;font-weight:600;color:${h.concluido?'var(--gold)':'var(--light)'};margin-right:12px">${h.responsavel}</span>
+                  <span class="material-icons-round" style="font-size:13px;color:var(--light)">access_time</span>
+                  <span style="font-size:11.5px;color:var(--light)">${fmt(h.data)}</span>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    ${c.status!=='concluido'?`
+    <div class="modal-actions">
+      <button class="btn-blue" onclick="updateStatus(${c.id},'aguardando')"><span class="material-icons-round" style="font-size:18px">pause_circle_outline</span> Aguardando</button>
+      <button class="btn-green" onclick="updateStatus(${c.id},'concluido')"><span class="material-icons-round" style="font-size:18px">check_circle_outline</span> Finalizar Garantia</button>
+    </div>`:''}
+
+    <div class="modal-footer-note">
+      <span class="material-icons-round">info_outline</span>
+      <p>Este documento é gerado automaticamente pelo sistema EASIER da BlasCar Multimarcas. Todas as informações registradas têm validade legal e podem ser utilizadas como comprovante de atendimento.</p>
+    </div>
+  `;
+  openModal();
+}
+
+function openDocModal(id) {
+  event.stopPropagation();
+  const c = chamados.find(x=>x.id===id);
+  if(!c) return;
+  const done = c.historico.filter(h=>h.concluido).length;
+  const total = c.historico.length;
+  document.getElementById('modal-title').textContent = 'DOCUMENTO DE GARANTIA';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:white;border-radius:14px;padding:28px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div style="width:56px;height:56px;background:var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <span class="material-icons-round" style="color:white;font-size:30px">directions_car</span>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:18px;font-weight:900">BlasCar Multimarcas</div>
+          <div style="font-size:12px;color:var(--light)">Sistema EASIER — Documento de Garantia</div>
+        </div>
+        <div style="text-align:right">
+          ${badgeHTML(c.status)}
+          <div style="font-size:12px;color:var(--light);font-weight:600;margin-top:4px">Protocolo #${c.id}</div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:24px">
+        <div>
+          <div class="doc-section-title">DADOS DO CLIENTE</div>
+          <div class="doc-row"><div class="doc-label">Cliente</div><div class="doc-val">${c.cliente}</div></div>
+          <div class="doc-row"><div class="doc-label">Veículo</div><div class="doc-val">${c.veiculo}</div></div>
+          <div class="doc-row"><div class="doc-label">Categoria</div><div class="doc-val">${c.categoria}</div></div>
+        </div>
+        <div style="background:#eee"></div>
+        <div>
+          <div class="doc-section-title">DADOS DO CHAMADO</div>
+          <div class="doc-row"><div class="doc-label">Protocolo</div><div class="doc-val">#${c.id}</div></div>
+          <div class="doc-row"><div class="doc-label">Abertura</div><div class="doc-val">${fmt(c.dataAbertura)}</div></div>
+          <div class="doc-row"><div class="doc-label">Progresso</div><div class="doc-val">${done} de ${total} etapas</div></div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0 16px">
+      <div class="doc-section-title">DESCRIÇÃO DO PROBLEMA</div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13.5px;line-height:1.6">${c.descricao}</div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-hdr">
+        <div class="progress-label">PROGRESSO DA GARANTIA</div>
+        <div class="progress-count">${done}/${total} etapas</div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar" style="width:${Math.round(done/total*100)}%;background:${c.status==='concluido'?'var(--green)':'var(--gold)'}"></div>
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:14px;padding:28px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div class="section-mini-title" style="margin-bottom:24px">FLUXO COMPLETO DA GARANTIA</div>
+      <div class="timeline">
+        ${c.historico.map((h,i) => `
+          <div class="timeline-item">
+            <div class="timeline-track">
+              <div class="t-circle ${h.concluido?'done':'pending'}">
+                <span class="material-icons-round">${h.concluido?'check_rounded':'hourglass_top'}</span>
+              </div>
+              ${i<c.historico.length-1?`<div class="t-line ${h.concluido?'done':'pending'}"></div>`:''}
+            </div>
+            <div class="t-content">
+              <div class="t-box ${h.concluido?'done':'pending'}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                  <div class="t-etapa ${h.concluido?'done':'pending'}">${h.etapa}</div>
+                  <span class="t-status-badge ${h.concluido?'done':'pending'}">${h.concluido?'Concluído':'Pendente'}</span>
+                </div>
+                <div class="t-desc ${h.concluido?'done':'pending'}">${h.descricao}</div>
+                <div class="t-meta">
+                  <span class="material-icons-round" style="font-size:13px;color:${h.concluido?'var(--gold)':'var(--light)'}">person_outline</span>
+                  <span style="font-size:11.5px;font-weight:600;color:${h.concluido?'var(--gold)':'var(--light)'};margin-right:12px">${h.responsavel}</span>
+                  <span class="material-icons-round" style="font-size:13px;color:var(--light)">access_time</span>
+                  <span style="font-size:11.5px;color:var(--light)">${fmt(h.data)}</span>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="modal-footer-note">
+      <span class="material-icons-round">info_outline</span>
+      <p>Este documento é gerado automaticamente pelo sistema EASIER da BlasCar Multimarcas. Todas as informações registradas têm validade legal e podem ser utilizadas como comprovante de atendimento.</p>
+    </div>
+  `;
+  openModal();
+}
+
+function updateStatus(id, status) {
+  const c = chamados.find(x=>x.id===id);
+  if(c) { c.status = status; }
+  closeModalDirect();
+  renderFormularios();
+  renderDashboard();
+  updateBadges();
+}
+
+function finalizarChamado(id) {
+  event.stopPropagation();
+  updateStatus(id,'concluido');
+}
+
+// ═══════════════════════════════════════════════
+// ABRIR CHAMADO
+// ═══════════════════════════════════════════════
+let selectedCat = 'Garantia';
+function selectCat(el, cat) {
+  selectedCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+function abrirChamado() {
+  const titulo = document.getElementById('nc-titulo').value.trim();
+  const desc   = document.getElementById('nc-descricao').value.trim();
+  if(!titulo || !desc) return;
+  const cliente = document.getElementById('nc-cliente').value.trim();
+  const veiculo = document.getElementById('nc-veiculo').value.trim();
+  const now = new Date();
+  chamados.unshift({
+    id: 1000 + chamados.length + 1,
+    titulo, descricao: desc, categoria: selectedCat,
+    cliente, veiculo, dataAbertura: now, status:'andamento',
+    historico: [
+      {etapa:'Abertura da Garantia', descricao:'Chamado aberto pelo administrador.', responsavel:'Admin', data:now, concluido:true},
+      {etapa:'Análise Técnica', descricao:'Aguardando análise técnica.', responsavel:'Técnico', data:now, concluido:false},
+      {etapa:'Aprovação Seguradora', descricao:'Pendente.', responsavel:'Seguradora', data:now, concluido:false},
+      {etapa:'Substituição de Peça', descricao:'Pendente.', responsavel:'Preparador', data:now, concluido:false},
+      {etapa:'Finalização da Garantia', descricao:'Pendente.', responsavel:'Admin', data:now, concluido:false},
+    ]
+  });
+  document.getElementById('abrir-form-view').classList.add('hidden');
+  document.getElementById('abrir-success-view').classList.remove('hidden');
+  renderDashboard();
+  updateBadges();
+}
+function resetAbrir() {
+  document.getElementById('nc-titulo').value='';
+  document.getElementById('nc-descricao').value='';
+  document.getElementById('nc-cliente').value='';
+  document.getElementById('nc-veiculo').value='';
+  document.getElementById('abrir-form-view').classList.remove('hidden');
+  document.getElementById('abrir-success-view').classList.add('hidden');
+}
+
+// ═══════════════════════════════════════════════
+// PERFIS
+// ═══════════════════════════════════════════════
+function renderPerfis() {
+  const chips = document.getElementById('perfis-chips');
+  const fs = [
+    {key:'todos', label:'Todos', color:'gold'},
+    {key:'financeiro', label:'Financeiro', color:'green'},
+    {key:'preparador', label:'Preparador', color:'blue'},
+    {key:'vendedor', label:'Vendedor', color:'orange'},
+  ];
+  chips.innerHTML = fs.map(f => {
+    const cnt = f.key==='todos'?perfis.length:perfis.filter(p=>p.tipo===f.key).length;
+    const active = perfisFiltro===f.key?'active-'+f.color:'';
+    return `<div class="chip ${active}" onclick="setPerfisFiltro('${f.key}')">${f.label}<span class="chip-count">${cnt}</span></div>`;
+  }).join('');
+
+  const lista = perfisFiltro==='todos'?perfis:perfis.filter(p=>p.tipo===perfisFiltro);
+  const pl = document.getElementById('perfis-list');
+  pl.innerHTML = lista.map((p,i) => `
+    <div class="perfil-card" onclick="openPerfilModal(${perfis.indexOf(p)})">
+      <div class="perfil-avatar">
+        <div class="perfil-avatar-inner" style="background:${tipoBg(p.tipo)}">
+          <span class="material-icons-round" style="color:${tipoColor(p.tipo)}">${tipoIcon(p.tipo)}</span>
+        </div>
+        ${p.online?'<div class="online-dot"></div>':''}
+      </div>
+      <div style="flex:1">
+        <div class="perfil-name">${p.nome}</div>
+        <div class="perfil-email">${p.email}</div>
+        <div class="perfil-tags">
+          <span class="tipo-badge" style="background:${tipoBg(p.tipo)};color:${tipoColor(p.tipo)}">${tipoLabel(p.tipo)}</span>
+          <span class="online-label" style="color:${p.online?'var(--green)':'var(--light)'}">
+            <span style="width:6px;height:6px;border-radius:50%;background:${p.online?'var(--green)':'var(--light)'};display:inline-block;margin-right:4px"></span>
+            ${p.online?'Online':'Offline'}
+          </span>
+        </div>
+      </div>
+      <span class="material-icons-round" style="color:var(--light)">chevron_right</span>
+    </div>`).join('');
+}
+function setPerfisFiltro(f) { perfisFiltro=f; renderPerfis(); }
+
+function openPerfilModal(idx) {
+  const p = perfis[idx];
+  document.getElementById('modal-title').textContent = p.nome;
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:white;border-radius:12px;padding:24px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="position:relative">
+          <div style="width:72px;height:72px;border-radius:50%;background:${tipoBg(p.tipo)};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${tipoColor(p.tipo)};font-size:32px">${tipoIcon(p.tipo)}</span>
+          </div>
+          ${p.online?`<div style="position:absolute;right:0;bottom:0;width:16px;height:16px;border-radius:50%;background:var(--green);border:2px solid white"></div>`:''}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:18px;font-weight:800">${p.nome}</div>
+          <span class="tipo-badge" style="background:${tipoBg(p.tipo)};color:${tipoColor(p.tipo)}">${tipoLabel(p.tipo)}</span>
+          <span style="margin-left:8px;font-size:10.5px;color:${p.online?'var(--green)':'var(--light)'}">${p.online?'● Online':'● Offline'}</span>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0">
+      <div class="info-row"><span class="material-icons-round">email</span><div><div class="info-label">E-mail</div><div class="info-val">${p.email}</div></div></div>
+      <div class="info-row" style="margin-top:10px"><span class="material-icons-round">business</span><div><div class="info-label">Departamento</div><div class="info-val">${p.depto}</div></div></div>
+      <div class="info-row" style="margin-top:10px"><span class="material-icons-round">phone</span><div><div class="info-label">Telefone</div><div class="info-val">${p.telefone}</div></div></div>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:8px">Enviar mensagem</div>
+    <textarea class="textarea-field" id="msg-send-input" placeholder="Escreva sua mensagem para ${p.nome}..." style="min-height:80px"></textarea>
+    <button class="btn-primary" style="margin-top:12px" onclick="enviarMsgPerfil('${p.nome}','${p.cargo||p.depto}')">
+      <span style="display:flex;align-items:center;justify-content:center;gap:8px">
+        <span class="material-icons-round" style="font-size:16px">send</span> Enviar mensagem
+      </span>
+    </button>
+    <div id="msg-enviada" class="hidden" style="margin-top:12px;background:var(--green-bg);border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px">
+      <span class="material-icons-round" style="color:var(--green);font-size:18px">check_circle</span>
+      <span style="font-size:13px;color:var(--green)">Mensagem enviada com sucesso!</span>
+    </div>
+  `;
+  openModal();
+}
+
+function enviarMsgPerfil(nome, cargo) {
+  const txt = document.getElementById('msg-send-input').value.trim();
+  if(!txt) return;
+  mensagens.unshift({ remetente: nome, texto: txt, cargo: cargo, data: new Date(), lida: true });
+  document.getElementById('msg-send-input').value = '';
+  const el = document.getElementById('msg-enviada');
+  el.classList.remove('hidden');
+  el.style.display = 'flex';
+  setTimeout(()=>{ el.classList.add('hidden'); el.style.display='none'; },3000);
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════
+// VEÍCULOS
+// ═══════════════════════════════════════════════
+function renderVeiculos() {
+  const vl = document.getElementById('veiculos-list');
+  vl.innerHTML = veiculos.map((v,i) => `
+    <div class="veiculo-card" onclick="openVeiculoModal(${i})">
+      <div class="veiculo-hdr">
+        <div>
+          <div class="veiculo-plate">${v.placa}</div>
+          <div class="veiculo-model">${v.modelo}</div>
+          <div class="veiculo-info">${v.ano} · ${v.cor} · Proprietário: ${v.cliente}</div>
+        </div>
+        ${badgeHTML(v.status)}
+      </div>
+      <div class="veiculo-details">
+        <div class="veiculo-detail-item">
+          <div class="detail-icon"><span class="material-icons-round">speed</span></div>
+          <div><div class="detail-label">Quilometragem</div><div class="detail-val">${v.km}</div></div>
+        </div>
+        <div class="veiculo-detail-item">
+          <div class="detail-icon"><span class="material-icons-round">verified_user</span></div>
+          <div><div class="detail-label">Garantia até</div><div class="detail-val">${v.garantiaAte}</div></div>
+        </div>
+        <div class="veiculo-detail-item">
+          <div class="detail-icon"><span class="material-icons-round">confirmation_number</span></div>
+          <div><div class="detail-label">Chassi</div><div class="detail-val" style="font-size:11px">${v.chassi}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openVeiculoModal(i) {
+  const v = veiculos[i];
+  const chs = chamados.filter(c=>c.veiculo.includes(v.placa));
+  document.getElementById('modal-title').textContent = v.modelo;
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:white;border-radius:12px;padding:24px;border:1px solid #e8e8e8;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <div>
+          <div class="veiculo-plate">${v.placa}</div>
+          <div style="font-size:20px;font-weight:800;margin-top:4px">${v.modelo}</div>
+        </div>
+        ${badgeHTML(v.status)}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">person</span></div><div><div class="detail-label">Proprietário</div><div class="detail-val">${v.cliente}</div></div></div>
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">calendar_today</span></div><div><div class="detail-label">Ano</div><div class="detail-val">${v.ano}</div></div></div>
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">palette</span></div><div><div class="detail-label">Cor</div><div class="detail-val">${v.cor}</div></div></div>
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">speed</span></div><div><div class="detail-label">Quilometragem</div><div class="detail-val">${v.km}</div></div></div>
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">verified_user</span></div><div><div class="detail-label">Garantia até</div><div class="detail-val">${v.garantiaAte}</div></div></div>
+        <div class="veiculo-detail-item"><div class="detail-icon"><span class="material-icons-round">confirmation_number</span></div><div><div class="detail-label">Chassi</div><div class="detail-val" style="font-size:11px">${v.chassi}</div></div></div>
+      </div>
+    </div>
+    ${chs.length>0?`
+    <div style="font-size:12.5px;font-weight:800;letter-spacing:0.5px;margin-bottom:14px">FORMULÁRIOS DESTE VEÍCULO</div>
+    ${chs.map(c=>`
+      <div class="form-card" style="margin-bottom:10px" onclick="openChamadoModal(${c.id})">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="form-card-title">${c.titulo}</div>
+            <div class="form-card-sub">#${c.id} · ${fmt(c.dataAbertura)}</div>
+          </div>
+          ${badgeHTML(c.status)}
+        </div>
+      </div>`).join('')}`:''}
+  `;
+  openModal();
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFICAÇÕES
+// ═══════════════════════════════════════════════
+function renderNotificacoes() {
+  const nl = naoLidas();
+  const btn = document.getElementById('mark-all-btn');
+  btn.style.display = nl>0?'':'none';
+
+  const el = document.getElementById('notif-list');
+  el.innerHTML = notificacoes.map((n,i) => `
+    <div class="notif-card ${n.lida?'':'unread'}" onclick="openNotifModal(${i})">
+      <div class="notif-icon" style="background:${notiBg(n.tipo)}">
+        <span class="material-icons-round" style="color:${notiColor(n.tipo)}">${notiIcon(n.tipo)}</span>
+      </div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="notif-title ${n.lida?'':'bold'}">${n.titulo}</div>
+          ${!n.lida?'<div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px"></div>':''}
+        </div>
+        <div class="notif-msg">${n.mensagem}</div>
+        <div class="notif-time">${fmt(n.data)}</div>
+      </div>
+      <span class="material-icons-round" style="color:var(--light);font-size:18px">chevron_right</span>
+    </div>`).join('');
+}
+
+function marcarTodasLidas() {
+  notificacoes.forEach(n=>n.lida=true);
+  renderNotificacoes();
+  updateBadges();
+}
+
+function openNotifModal(i) {
+  const n = notificacoes[i];
+  n.lida = true;
+  renderNotificacoes(); updateBadges();
+  document.getElementById('modal-title').textContent = 'NOTIFICAÇÃO';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:white;border-radius:12px;padding:24px;border:1px solid #e8e8e8">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="width:52px;height:52px;border-radius:50%;background:${notiBg(n.tipo)};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <span class="material-icons-round" style="color:${notiColor(n.tipo)};font-size:26px">${notiIcon(n.tipo)}</span>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800">${n.titulo}</div>
+          <div style="font-size:11.5px;color:var(--light);margin-top:4px">${fmt(n.data)}</div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0 16px">
+      <div style="font-size:14px;line-height:1.6">${n.mensagem}</div>
+    </div>`;
+  openModal();
+}
+
+// ═══════════════════════════════════════════════
+// MENSAGENS
+// ═══════════════════════════════════════════════
+function fmtHora(d) {
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function fmtDia(d) {
+  const hoje = new Date(); const ontem = new Date(); ontem.setDate(ontem.getDate()-1);
+  if(d.toDateString()===hoje.toDateString()) return 'Hoje';
+  if(d.toDateString()===ontem.toDateString()) return 'Ontem';
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function lastMsg(m) { return m.conversa[m.conversa.length-1]; }
+
+function renderMensagens(filter) {
+  const panel = document.getElementById('msg-list-panel');
+  const list = filter
+    ? mensagens.filter(m => m.remetente.toLowerCase().includes(filter.toLowerCase()))
+    : mensagens;
+
+  panel.innerHTML = list.map((m, i) => {
+    const idx = mensagens.indexOf(m);
+    const last = lastMsg(m);
+    const unread = !m.lida;
+    return `
+    <div class="msg-list-item ${selectedMsg===idx?'selected':''} ${unread&&selectedMsg!==idx?'unread':''}" onclick="selectMsg(${idx})">
+      <div class="msg-list-avatar" style="background:${m.lida?'#f0f0f0':'var(--gold-light)'}">
+        <span class="material-icons-round" style="color:${m.lida?'var(--light)':'var(--gold)'}">person</span>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
+          <div class="msg-list-name ${unread?'bold':''}">${m.remetente}</div>
+          <div class="msg-list-time">${fmtHora(last.hora)}</div>
+        </div>
+        <div class="msg-list-cargo">${m.cargo}${m.online?'&nbsp;<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);vertical-align:middle"></span>':''}</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
+          ${last.de==='eu'?'<span class="material-icons-round" style="font-size:12px;color:var(--gold)">reply</span>':''}
+          <div class="msg-list-preview">${last.texto}</div>
+          ${unread?'<div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-left:auto"></div>':''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterMsgs(val) { renderMensagens(val); }
+
+function selectMsg(i) {
+  selectedMsg = i;
+  const m = mensagens[i];
+  m.lida = true;
+  renderMensagens(document.getElementById('msg-search-input').value);
+  updateBadges();
+
+  document.getElementById('msg-empty').style.display = 'none';
+  const chat = document.getElementById('msg-chat-view');
+  chat.style.display = 'flex';
+  document.getElementById('msg-chat-name').innerHTML = m.remetente + (m.online ? '<span class="msg-online-dot"></span>' : '');
+  document.getElementById('msg-chat-cargo').textContent = m.cargo + (m.online ? ' · Online' : ' · Offline');
+  renderBubbles();
+}
+
+function renderBubbles() {
+  const m = mensagens[selectedMsg];
+  const body = document.getElementById('msg-body');
+  let lastDay = null;
+  let html = '';
+
+  m.conversa.forEach(msg => {
+    const dia = fmtDia(msg.hora);
+    if(dia !== lastDay) {
+      html += `<div class="msg-day-divider"><span class="msg-day-label">${dia}</span></div>`;
+      lastDay = dia;
+    }
+    const sent = msg.de === 'eu';
+    html += `
+      <div class="bubble-row ${sent?'sent':'received'}">
+        <div class="bubble-avatar" style="background:${sent?'var(--gold-light)':'#f0f0f0'}">
+          <span class="material-icons-round" style="color:${sent?'var(--gold)':'var(--light)'}">${sent?'person':'person'}</span>
+        </div>
+        <div class="bubble-wrap">
+          <div class="bubble ${sent?'sent':'received'}">${msg.texto}</div>
+          <div class="bubble-time">${fmtHora(msg.hora)}${sent?' · Enviado':''}</div>
+        </div>
+      </div>`;
+  });
+
+  body.innerHTML = html;
+  body.scrollTop = body.scrollHeight;
+}
+
+function sendMsg() {
+  const input = document.getElementById('msg-input');
+  const txt = input.value.trim();
+  if(!txt || selectedMsg === null) return;
+
+  const m = mensagens[selectedMsg];
+  m.conversa.push({ de:'eu', texto: txt, hora: new Date() });
+  input.value = '';
+  input.style.height = 'auto';
+  renderBubbles();
+  renderMensagens(document.getElementById('msg-search-input').value);
+
+  // Simulate response after delay
+  const responses = [
+    'Entendido, obrigado!',
+    'Certo, vou verificar agora.',
+    'Perfeito, fico aguardando.',
+    'Ok! Já estou providenciando.',
+    'Confirmado. Vou te atualizar em breve.'
+  ];
+  setTimeout(() => {
+    const r = responses[Math.floor(Math.random()*responses.length)];
+    m.conversa.push({ de:'deles', texto: r, hora: new Date() });
+    if(selectedMsg !== mensagens.indexOf(m)) m.lida = false;
+    renderBubbles();
+    renderMensagens(document.getElementById('msg-search-input').value);
+    updateBadges();
+  }, 1200 + Math.random()*1000);
+}
+
+function handleMsgKey(e) {
+  if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// ═══════════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════════
+function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal(e) { if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+renderDashboard();
+renderFormularios();
+renderVeiculos();
+renderNotificacoes();
+renderPerfis();
+renderMensagens();
+updateBadges();
+</script>
+</body>
+</html>
